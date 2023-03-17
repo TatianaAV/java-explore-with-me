@@ -30,8 +30,9 @@ public class EndpointController {
         log.info("/hit\" + endpoint" + endpointDto);
         return endpointService.create(endpointDto);
     }
+
     @GetMapping("/test")
-    public String test(){
+    public String test() {
         return "test";
     }
 

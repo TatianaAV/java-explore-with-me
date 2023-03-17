@@ -2,7 +2,7 @@ version: '3.8'
 
 
 services:
-  awm-main:
+  ewm-service:
     build: awm-main
     image: awm-main
     container_name: awm-main
