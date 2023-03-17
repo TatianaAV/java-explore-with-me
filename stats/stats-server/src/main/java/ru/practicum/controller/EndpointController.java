@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.EndpointService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +26,7 @@ public class EndpointController {
 
 
     @PostMapping("/hit")
-    public EndpointDto create(@RequestBody EndpointDto endpointDto) {
+    public EndpointDto create(@Valid @RequestBody EndpointDto endpointDto) {
         log.info("/hit\" + endpoint" + endpointDto);
         return endpointService.create(endpointDto);
     }

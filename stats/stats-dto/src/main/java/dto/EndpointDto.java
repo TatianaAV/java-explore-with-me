@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class EndpointDto {
+
     private String app;
     private String uri;
     private String ip;

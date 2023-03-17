@@ -18,6 +18,7 @@
         <mapstruct.version>1.5.3.Final</mapstruct.version>
     </properties>
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
