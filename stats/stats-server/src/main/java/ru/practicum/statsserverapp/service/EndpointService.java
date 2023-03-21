@@ -1,4 +1,4 @@
-package ru.practicum.service;
+package ru.practicum.statsserverapp.service;
 
 import dto.EndpointDto;
 import dto.EndpointDtoOutput;

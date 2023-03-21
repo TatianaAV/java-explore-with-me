@@ -1,4 +1,4 @@
-package ru.practicum.handler;
+package ru.practicum.statsserverapp.handler;
 
 public class ErrorResponse {
     private final String error;

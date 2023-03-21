@@ -1,9 +1,9 @@
-package ru.practicum.repo;
+package ru.practicum.statsserverapp.repo;
 
 import dto.EndpointDtoOutput;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.model.Endpoint;
+import ru.practicum.statsserverapp.model.Endpoint;
 
 import java.time.LocalDateTime;
 import java.util.List;

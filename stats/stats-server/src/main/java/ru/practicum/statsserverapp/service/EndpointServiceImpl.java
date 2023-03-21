@@ -1,4 +1,4 @@
-package ru.practicum.service;
+package ru.practicum.statsserverapp.service;
 
 
 import dto.EndpointDto;
@@ -6,9 +6,9 @@ import dto.EndpointDtoOutput;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.mapper.EndpointMapper;
-import ru.practicum.model.Endpoint;
-import ru.practicum.repo.EndpointRepository;
+import ru.practicum.statsserverapp.mapper.EndpointMapper;
+import ru.practicum.statsserverapp.model.Endpoint;
+import ru.practicum.statsserverapp.repo.EndpointRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -32,6 +32,7 @@ public class EndpointServiceImpl implements EndpointService {
 
     @Override
     public List<EndpointDtoOutput> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        uris.forEach(System.out::println);
         List<EndpointDtoOutput> stats;
         if (uris.isEmpty()) {
             if (unique.equals(true)) {
@@ -44,9 +45,9 @@ public class EndpointServiceImpl implements EndpointService {
                 stats = repository.findDistinctByTimestampBetweenAndUriIn(start, end, uris);
             } else {
                 stats = repository.findAllByTimestampBetweenAndUriIn(start, end, uris);
-                log.info("stats.size {}", stats.size());
             }
         }
+        log.info("stats.size {}, unique {}, uris.size {}", stats.size(), unique, uris.size());
         return stats;
     }
 }

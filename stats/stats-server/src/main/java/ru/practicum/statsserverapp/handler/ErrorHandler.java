@@ -1,4 +1,4 @@
-package ru.practicum.handler;
+package ru.practicum.statsserverapp.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,7 +13,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public ErrorResponse handle(final Throwable e) {
+    public ErrorResponse handle(final Exception e) {
         log.error("INTERNAL_SERVER_ERROR {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
