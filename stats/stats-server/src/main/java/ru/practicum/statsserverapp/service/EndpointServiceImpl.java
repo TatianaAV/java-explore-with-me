@@ -6,19 +6,24 @@ import dto.EndpointDtoOutput;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.statsserverapp.handler.NotFoundException;
 import ru.practicum.statsserverapp.mapper.EndpointMapper;
+import ru.practicum.statsserverapp.model.App;
 import ru.practicum.statsserverapp.model.Endpoint;
+import ru.practicum.statsserverapp.repo.AppRepository;
 import ru.practicum.statsserverapp.repo.EndpointRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class EndpointServiceImpl implements EndpointService {
     private final EndpointRepository repository;
+    private final AppRepository appRepository;
     private final EndpointMapper mapper;
 
 
@@ -26,13 +31,20 @@ public class EndpointServiceImpl implements EndpointService {
     @Override
     public EndpointDto create(EndpointDto endpointDto) {
         log.info("EndpointDto {}", endpointDto.toString());
-        Endpoint endpoint = mapper.toEndpoint(endpointDto);
+        String nameApp = endpointDto.getApp();
+        Optional<App> appName = appRepository.findByName(nameApp);
+        App app;
+        if (appName.isEmpty()) {
+            app = appRepository.save(new App(nameApp));
+        } else {
+            app = appName.orElseThrow(() -> new NotFoundException(" rfrf"));
+        }
+        Endpoint endpoint = mapper.toEndpoint(endpointDto, app);
         return mapper.toEndpointDto(repository.save(endpoint));
     }
 
     @Override
     public List<EndpointDtoOutput> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        uris.forEach(System.out::println);
         List<EndpointDtoOutput> stats;
         if (uris.isEmpty()) {
             if (unique.equals(true)) {
