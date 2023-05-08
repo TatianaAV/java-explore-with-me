@@ -20,6 +20,7 @@ public class ErrorHandler {
     public ErrorResponse handler(HttpServletRequest request, final Exception e) {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
+        e.printStackTrace();
         return new ErrorResponse(e.getMessage());
     }
 
@@ -28,13 +29,23 @@ public class ErrorHandler {
     public ErrorResponse handlerValidationException(HttpServletRequest request, final NotFoundException e) {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
+        e.printStackTrace();
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler({EndpointEmptyUriException.class, EndpointEmptyUriException.class})
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorResponse handleBadRequestFoundException(final RuntimeException e) {
+        log.info(e.getMessage(), e);
+        e.printStackTrace();
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public ErrorResponse handle(final Exception e) {
-        log.error("INTERNAL_SERVER_ERROR {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+    public ErrorResponse handleThrowable(final Throwable e) {
+        log.info(e.getMessage(), e);
+        e.printStackTrace();
+        return new ErrorResponse("Произошла непредвиденная ошибка.");
     }
 }
