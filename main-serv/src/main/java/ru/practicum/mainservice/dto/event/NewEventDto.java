@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
+import ru.practicum.mainservice.model.Location;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -33,7 +34,7 @@ public class NewEventDto {
     private LocalDateTime eventDate;
 
     @NotNull
-    private LocationDto location;
+    private Location location;
 
     @NotNull
     private Boolean paid;

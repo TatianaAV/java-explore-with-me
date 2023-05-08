@@ -53,7 +53,7 @@ public class EventServiceImpl implements EventService {
         if (eventDto.getEventDate().isAfter(LocalDateTime.now().plusHours(2))) {
             User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
             Category category = categoryRepository.findById(eventDto.getCategory()).orElseThrow(() -> new NotFoundException("Категория указана неверно"));
-            LocationDto locationDto = eventDto.getLocation();
+            Location locationDto = eventDto.getLocation();
             event = eventMapper.toNewEvent(eventDto, user, category, new Location(locationDto.getLat(), locationDto.getLon()), PENDING);
         } else {
             throw new NotValidatedExceptionConflict("Нельзя создать событие менее, чем за 2 часа до начала");
@@ -219,7 +219,7 @@ public class EventServiceImpl implements EventService {
         if (updateEvent.getAnnotation() != null) {
             event.setAnnotation(updateEvent.getAnnotation());
         }
-        if (updateEvent.getCategory() != null && updateEvent.getCategory() != event.getCategory().getId()) {
+        if (updateEvent.getCategory() != null && !updateEvent.getCategory().equals(event.getCategory().getId())) {
             event.setCategory(
                     categoryRepository.findById(updateEvent.getCategory())
                             .orElseThrow(() -> new NotFoundException("Категория не найдена")));

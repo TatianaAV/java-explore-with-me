@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
+import ru.practicum.mainservice.model.Location;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -33,7 +34,7 @@ public class UpdateEventRequest {
     @JsonFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss", timezone = "Europe/Moscow")
     private LocalDateTime eventDate;
 
-    private LocationDto location;
+    private Location location;
 
     private Boolean paid;
 

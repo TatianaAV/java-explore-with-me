@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.mainservice.dto.category.CategoryDto;
 import ru.practicum.mainservice.dto.user.UserShortDto;
+import ru.practicum.mainservice.model.Location;
 
 import java.time.LocalDateTime;
 
@@ -33,7 +34,7 @@ public class EventFullDto {
 
     private UserShortDto initiator;
 
-    private LocationDto location;
+    private Location location;
 
     private Boolean paid;
 
