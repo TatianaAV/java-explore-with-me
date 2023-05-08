@@ -23,7 +23,6 @@ public class EventRequestStatusUpdateRequest {
     private StatusEnum status;
 
 
-
     public enum StatusEnum {
         CONFIRMED("CONFIRMED"),
 

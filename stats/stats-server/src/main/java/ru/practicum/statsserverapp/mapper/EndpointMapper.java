@@ -3,11 +3,8 @@ package ru.practicum.statsserverapp.mapper;
 import dto.EndpointDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.data.domain.Page;
 import ru.practicum.statsserverapp.model.App;
 import ru.practicum.statsserverapp.model.Endpoint;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface EndpointMapper {

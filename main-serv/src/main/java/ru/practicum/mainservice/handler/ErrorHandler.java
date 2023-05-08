@@ -40,7 +40,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(),BAD_REQUEST);
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(ValidationException.class)

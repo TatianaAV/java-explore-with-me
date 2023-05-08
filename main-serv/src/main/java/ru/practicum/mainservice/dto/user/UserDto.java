@@ -10,6 +10,7 @@ import javax.validation.Valid;
 @Getter
 @Setter
 public class UserDto {
+
     private Long id;
 
     private String email;

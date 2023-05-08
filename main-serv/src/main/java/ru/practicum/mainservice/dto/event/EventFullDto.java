@@ -43,14 +43,13 @@ public class EventFullDto {
 
     private Boolean requestModeration;
 
-    private StateEvent state;//PENDING, PUBLISHED, CANCELED
+    private StateEvent state;
 
     private Long views;
 
     public enum StateEvent {
         PENDING("PENDING"),
         PUBLISHED("PUBLISHED"),
-
         CANCELED("CANCELED");
 
         private final String value;

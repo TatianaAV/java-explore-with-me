@@ -13,9 +13,6 @@ public class NewCompilationDto {
 
     private List<Long> events;
 
-    //example: false
-    //default: false
-    //Закреплена ли подборка на главной странице сайта
     private Boolean pinned;
 
     @NotBlank(message = "Имя отсутствует")

@@ -10,7 +10,8 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @AllArgsConstructor
 public class UserShortDto {
-  private Long id;
 
-  private String name;
+    private Long id;
+
+    private String name;
 }

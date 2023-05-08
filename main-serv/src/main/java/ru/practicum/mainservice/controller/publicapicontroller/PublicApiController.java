@@ -69,15 +69,15 @@ public class PublicApiController {
     @GetMapping("/events")
     @ResponseStatus(HttpStatus.OK)
     public List<EventShortDto> getEventsWithFilter(@RequestParam(name = "text", required = false) String text,
-                                             @RequestParam(name = "categories", required = false) Long categories,
-                                             @RequestParam(name = "paid", required = false) Boolean paid,
-                                             @RequestParam(name = "rangeStart", required = false) String rangeStart,
-                                             @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
-                                             @RequestParam(name = "sort", required = false) String sort,
-                                             @RequestParam(name = "onlyAvailable", required = false) Boolean onlyAvailable,
-                                             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size,
-                                             HttpServletRequest request) {
+                                                   @RequestParam(name = "categories", required = false) Long categories,
+                                                   @RequestParam(name = "paid", required = false) Boolean paid,
+                                                   @RequestParam(name = "rangeStart", required = false) String rangeStart,
+                                                   @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
+                                                   @RequestParam(name = "sort", required = false) String sort,
+                                                   @RequestParam(name = "onlyAvailable", required = false) Boolean onlyAvailable,
+                                                   @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                   @Positive @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                                   HttpServletRequest request) {
         log.info("GET PublicApiController/ getEventsWithFilter");
         EntenteParams ententeParams;
         ententeParams = new EntenteParams(
@@ -100,7 +100,7 @@ public class PublicApiController {
         log.info("from: {}", from);
         log.info("size: {}", size);
         log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}, {}, {}",request.getProtocol(), request.getHttpServletMapping(), request.getRequestURI());
+        log.info("endpoint path: {}, {}, {}", request.getProtocol(), request.getHttpServletMapping(), request.getRequestURI());
 
         return eventService.getEventsWithFilter(ententeParams, request);
     }

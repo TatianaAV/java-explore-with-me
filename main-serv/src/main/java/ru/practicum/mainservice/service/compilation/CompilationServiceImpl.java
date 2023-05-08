@@ -167,7 +167,6 @@ public class CompilationServiceImpl implements CompilationService {
         }
         Map<Long, List<Compilation>> compilationMap = list.stream().collect(groupingBy(compilation -> compilation.getTitle().getId(), toList()));
         List<CompilationDto> compilation = compilationMapper.toCompilationDto(compilationMap);
-//add views
         return compilation.get(0);
     }
 }

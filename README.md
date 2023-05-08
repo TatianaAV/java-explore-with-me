@@ -1,2 +1,14 @@
 # java-explore-with-me
-Template repository for ExploreWithMe project.
+#Дипломный проект java-explore-with-me
+##Схема базы данных основного сервиса
+<picture>
+    <source media="(prefers-color-scheme: light)" srcset="main-serv/src/main/resources/ewm-service.jpg">
+    <img alt="Shows an illustrated sun in light mode and a moon with stars in dark mode." 
+    src="src/main/resources/ewm-service.jpg">
+</picture>
+##Схема базы данных сервиса статистики
+<picture>
+    <source media="(prefers-color-scheme: light)" srcset="stats/stats-server/src/main/resources/Endpoints.jpg">
+    <img alt="Shows an illustrated sun in light mode and a moon with stars in dark mode." 
+    src="stats/stats-server/src/main/resources/Endpoints.jpg">
+</picture>  

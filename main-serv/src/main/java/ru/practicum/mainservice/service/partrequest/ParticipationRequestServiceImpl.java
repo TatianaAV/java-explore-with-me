@@ -82,13 +82,9 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         /*  "При создании у запроса на участие должен быть статус PENDING, а при удалении - CANCELED"*/
         ParticipationRequest requestUser = participationRequestRepository.findByIdAndRequester_Id(requestId, userId)
                 .orElseThrow(() -> new NotFoundException("Request with id= " + requestId + " was not found"));
-       // if (requestUser.getStatus().equals(ParticipationRequestDto.StatusRequest.PENDING)) {
-            requestUser.setStatus(ParticipationRequestDto.StatusRequest.CANCELED);
-       // } else {
-      //     throw  new NotFoundException("Запрос " + requestId + " уже подтвержден, для отмены свяжитесь с администратором");
-       // }
+        requestUser.setStatus(ParticipationRequestDto.StatusRequest.CANCELED);
 
-       return requestMapper.toRequestDto(requestUser);
+        return requestMapper.toRequestDto(requestUser);
     }
 
     @Transactional
@@ -97,7 +93,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие не найдено"));
         Integer eventParticipants = participationRequestRepository.findByEvent_IdCount(eventId);
-      event.setConfirmedRequests(eventParticipants);
+        event.setConfirmedRequests(eventParticipants);
         Map<Long, ParticipationRequest> eventRequest = participationRequestRepository.findParticipationRequestByEvent_Initiator_IdAndEvent_Id(userId, eventId)
                 .stream().collect(Collectors.toMap(ParticipationRequest::getId, request -> request));
 

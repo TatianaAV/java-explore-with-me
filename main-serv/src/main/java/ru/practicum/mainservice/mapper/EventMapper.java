@@ -2,14 +2,13 @@ package ru.practicum.mainservice.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.data.domain.Page;
+import ru.practicum.mainservice.dto.event.EventFullDto;
+import ru.practicum.mainservice.dto.event.EventShortDto;
+import ru.practicum.mainservice.dto.event.NewEventDto;
 import ru.practicum.mainservice.model.Category;
 import ru.practicum.mainservice.model.Event;
 import ru.practicum.mainservice.model.Location;
 import ru.practicum.mainservice.model.User;
-import ru.practicum.mainservice.dto.event.EventFullDto;
-import ru.practicum.mainservice.dto.event.EventShortDto;
-import ru.practicum.mainservice.dto.event.NewEventDto;
 
 import java.util.List;
 

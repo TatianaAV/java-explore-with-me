@@ -71,9 +71,6 @@ public class Event {
     @Column(name = "views")
     private Long views;
 
-    /*state	string
-[ PENDING, PUBLISHED, CANCELED ]
-Список состояний жизненного цикла события*/
     @Enumerated(EnumType.STRING)
     @Column(name = "state", length = 10, nullable = false)
     private EventFullDto.StateEvent state;

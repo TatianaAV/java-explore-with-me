@@ -18,15 +18,13 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewEventDto {
-  public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-   // @Max(3000)
     @NotNull(message = "Краткое описание события.  max: 2000, min: 20")
     private String annotation;
     @Positive
     private Long category;
 
-  //  @Max(9000)
     @NotNull(message = "Полное описание события.  max: 7000, min: 20")
     private String description;
 
@@ -42,20 +40,9 @@ public class NewEventDto {
 
     private Integer participantLimit;
 
-    /* requestModeration	boolean
-     *   example: false
-     *   default: true
-     *  Нужна ли пре-модерация заявок на участие. Если true, то все заявки будут ожидать подтверждения инициатором события.
-     *  Если false - то будут подтверждаться автоматически.
-     */
     private Boolean requestModeration;
 
-  // @Max(220)
-   @NotNull(message = "Заголовок события.  max: 120, min: 3")
+    @NotNull(message = "Заголовок события.  max: 120, min: 3")
     private String title;
-
- /* public void setEventDate(String eventDate) {
-        this.eventDate = LocalDateTime.parse(URLDecoder.decode(eventDate, StandardCharsets.UTF_8), FORMAT);
-    }*/
 }
 

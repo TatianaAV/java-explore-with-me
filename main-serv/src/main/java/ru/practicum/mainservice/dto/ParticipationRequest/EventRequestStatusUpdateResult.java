@@ -43,11 +43,10 @@ public class EventRequestStatusUpdateResult {
     @Override
     public String toString() {
 
-        String sb = "class EventRequestStatusUpdateResult {\n" +
+        return "class EventRequestStatusUpdateResult {\n" +
                 "    confirmedRequests: " + toIndentedString(confirmedRequests) + "\n" +
                 "    rejectedRequests: " + toIndentedString(rejectedRequests) + "\n" +
                 "}";
-        return sb;
     }
 
     private String toIndentedString(Object o) {

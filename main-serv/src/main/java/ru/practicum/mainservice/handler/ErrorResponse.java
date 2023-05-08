@@ -10,7 +10,7 @@ public class ErrorResponse {
     private final HttpStatus status;
 
     @JsonFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss", timezone = "Europe/Moscow")
-    private final LocalDateTime  timestamp = LocalDateTime.now();
+    private final LocalDateTime timestamp = LocalDateTime.now();
 
     ErrorResponse(String error, HttpStatus status) {
         this.error = error;

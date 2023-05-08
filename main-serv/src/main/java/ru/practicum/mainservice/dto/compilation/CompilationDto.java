@@ -11,14 +11,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompilationDto {
-  private Long id;
-  private List<EventShortDto> events = new ArrayList<>();
-  private Boolean pinned;
-  private String title;
+    private Long id;
+    private List<EventShortDto> events = new ArrayList<>();
+    private Boolean pinned;
+    private String title;
 
-  public CompilationDto(Long id, Boolean pined, String title) {
-    this.id = id;
-    this.pinned = pined;
-    this.title = title;
-  }
+    public CompilationDto(Long id, Boolean pined, String title) {
+        this.id = id;
+        this.pinned = pined;
+        this.title = title;
+    }
 }

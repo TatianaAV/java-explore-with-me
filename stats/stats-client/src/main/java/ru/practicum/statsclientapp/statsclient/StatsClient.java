@@ -68,39 +68,4 @@ public class StatsClient {
                 })
                 .block();
     }
-
-/*    private final WebClient webClient;
-
-    public EndpointDto addEndpointHit(EndpointDto endpointHitDto) {
-
-        return webClient
-                .post()
-                .uri("/hit")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(Mono.just(endpointHitDto), EndpointDto.class)
-                .retrieve()
-                .bodyToMono(EndpointDto.class)
-                .block();
-    }
-
-    public List<ViewStatsDto> getStats(String start, String end, List<String> uris, boolean unique) {
-*//* UriTemplate template = UriTemplate.fromTemplate(
-                "/users{?ids*}&from={from}&size={size}");
-        template.set("ids", ids);
-        template.set("from", from);
-        template.set("size", size);
-        String expanded = template.expand();*//*
-       return Arrays.asList(Objects.requireNonNull(webClient
-               .get()
-               .uri(uriBuilder -> uriBuilder
-                       .path("/stats{?uris*}&start={start}&end={end}&unique={unique}")
-                       .queryParam("start", start)
-                       .queryParam("end", end)
-                       .queryParam("uris", uris)
-                       .queryParam("unique", unique)
-                       .build())
-               .retrieve()
-               .bodyToMono(ViewStatsDto[].class)
-               .block()));
-    }*/
 }
