@@ -12,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "compilations_title", schema = "public")
+@Table(name = "compilations_title")
 public class CompilationTitle {
 
     @Id

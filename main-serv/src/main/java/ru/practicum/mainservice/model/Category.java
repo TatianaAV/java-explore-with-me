@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "categories", schema = "public")
+@Table(name = "categories")
 public class Category {
 
     @Id

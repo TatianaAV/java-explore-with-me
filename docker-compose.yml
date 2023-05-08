@@ -50,7 +50,7 @@ services:
     ports:
       - "6542:5432"
     environment:
-      - POSTGRES_DB= ewm_service_db
+      - POSTGRES_DB=ewm_service_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=iamroot
       - TZ=Europe/Moscow

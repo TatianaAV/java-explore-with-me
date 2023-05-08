@@ -13,7 +13,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "locations", schema = "public")
+@Table(name = "locations")
 public class Location {
 
     @Id
