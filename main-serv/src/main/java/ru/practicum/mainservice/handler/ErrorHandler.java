@@ -31,7 +31,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), INTERNAL_SERVER_ERROR);
+        return new ErrorResponse(e.getMessage(), INTERNAL_SERVER_ERROR, e.getStackTrace());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -40,7 +40,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), BAD_REQUEST);
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 
     @ExceptionHandler(ValidationException.class)
@@ -49,7 +49,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), BAD_REQUEST);
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 
     @ExceptionHandler(UnexpectedTypeException.class)
@@ -58,7 +58,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), BAD_REQUEST);
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -67,7 +67,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), BAD_REQUEST);
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -76,7 +76,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), BAD_REQUEST);
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 
     @ExceptionHandler(PropertyValueException.class)
@@ -85,7 +85,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), BAD_REQUEST);
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 
     @ExceptionHandler(TransactionSystemException.class)
@@ -94,7 +94,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), BAD_REQUEST);
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 
     @ExceptionHandler(NotValidatedExceptionConflict.class)
@@ -103,7 +103,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), CONFLICT);
+        return new ErrorResponse(e.getMessage(), CONFLICT, e.getStackTrace());
     }
 
 
@@ -113,7 +113,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), CONFLICT);
+        return new ErrorResponse(e.getMessage(), CONFLICT, e.getStackTrace());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -122,7 +122,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), BAD_REQUEST);
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 
     @ExceptionHandler
@@ -131,7 +131,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), NOT_FOUND);
+        return new ErrorResponse(e.getMessage(), NOT_FOUND, e.getStackTrace());
     }
 
     @ExceptionHandler
@@ -141,7 +141,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), INTERNAL_SERVER_ERROR);
+        return new ErrorResponse(e.getMessage(), INTERNAL_SERVER_ERROR, e.getStackTrace());
     }
 
     @ExceptionHandler
@@ -150,7 +150,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), INTERNAL_SERVER_ERROR);
+        return new ErrorResponse(e.getMessage(), INTERNAL_SERVER_ERROR, e.getStackTrace());
     }
 
     @ResponseStatus(INTERNAL_SERVER_ERROR)
@@ -159,6 +159,6 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage(), INTERNAL_SERVER_ERROR);
+        return new ErrorResponse(e.getMessage(), INTERNAL_SERVER_ERROR, e.getStackTrace());
     }
 }

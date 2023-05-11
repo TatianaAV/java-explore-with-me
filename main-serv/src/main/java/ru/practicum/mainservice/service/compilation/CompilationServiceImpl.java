@@ -32,7 +32,6 @@ import static java.util.stream.Collectors.toList;
 @Transactional
 public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
-
     private final CompilationRepository compilationRepository;
     private final CompilationTitleRepository compilationTitleRepository;
     private final CompilationMapper compilationMapper;
@@ -41,6 +40,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto createCompilation(NewCompilationDto compilationDto) {
 
         List<Event> events = eventRepository.findByIdIn(compilationDto.getEvents());
+
         List<Compilation> compilations = new ArrayList<>();
         String nameCompilation = compilationDto.getTitle();
 
@@ -66,7 +66,7 @@ public class CompilationServiceImpl implements CompilationService {
         Map<Long, List<Compilation>> compilationSaved = compilationRepository.saveAll(compilations).stream().collect(groupingBy(compilation -> compilation.getTitle().getId(), toList()));
 
         List<CompilationDto> compilation = compilationMapper.toCompilationDto(compilationSaved);
-//add views
+
         return compilation.get(0);
     }
 
@@ -99,7 +99,6 @@ public class CompilationServiceImpl implements CompilationService {
             Map<Long, List<Compilation>> compilationSaved = compilationRepository.saveAll(compilations).stream().collect(groupingBy(compilation -> compilation.getTitle().getId(), toList()));
 
             List<CompilationDto> compilation = compilationMapper.toCompilationDto(compilationSaved);
-//add views
             return compilation.get(0);
         }
         if (!list.isEmpty() && !updateCompilation.getEvents().isEmpty()) {
@@ -113,14 +112,14 @@ public class CompilationServiceImpl implements CompilationService {
             Map<Long, List<Compilation>> newCompilationSaved = compilationRepository.saveAll(compilations).stream().collect(groupingBy(compilation -> compilation.getTitle().getId(), toList()));
 
             List<CompilationDto> compilation = compilationMapper.toCompilationDto(newCompilationSaved);
-//add views
+
             return compilation.get(0);
         }
 
         Map<Long, List<Compilation>> newCompilation = list.stream().collect(groupingBy(compilation -> compilation.getTitle().getId(), toList()));
 
         List<CompilationDto> compilation = compilationMapper.toCompilationDto(newCompilation);
-//add views
+
         return compilation.get(0);
     }
 

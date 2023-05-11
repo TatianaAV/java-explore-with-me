@@ -9,7 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.statsserverapp.service.EndpointService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.net.URLDecoder;
@@ -25,14 +24,6 @@ import java.util.List;
 public class EndpointController {
     public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final EndpointService endpointService;
-
-    @GetMapping("/test")
-    @ResponseStatus(HttpStatus.CREATED)
-    public String test(HttpServletRequest request) {
-        log.info("EndpointController/test");
-        return "test localhost " + request.getQueryString() + " " + request.getRequestURI();
-
-    }
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)

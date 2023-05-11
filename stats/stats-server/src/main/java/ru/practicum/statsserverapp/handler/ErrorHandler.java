@@ -21,7 +21,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage());
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 
     @ExceptionHandler
@@ -30,7 +30,7 @@ public class ErrorHandler {
         log.error("Requested URL= {}", request.getRequestURL());
         log.error("BAD_REQUEST {}", e.getMessage());
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage());
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 
     @ExceptionHandler({EndpointEmptyUriException.class, EndpointEmptyUriException.class})
@@ -38,7 +38,7 @@ public class ErrorHandler {
     public ErrorResponse handleBadRequestFoundException(final RuntimeException e) {
         log.info(e.getMessage(), e);
         e.printStackTrace();
-        return new ErrorResponse(e.getMessage());
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 
     @ExceptionHandler
@@ -46,6 +46,6 @@ public class ErrorHandler {
     public ErrorResponse handleThrowable(final Throwable e) {
         log.info(e.getMessage(), e);
         e.printStackTrace();
-        return new ErrorResponse("Произошла непредвиденная ошибка.");
+        return new ErrorResponse(e.getMessage(), BAD_REQUEST, e.getStackTrace());
     }
 }

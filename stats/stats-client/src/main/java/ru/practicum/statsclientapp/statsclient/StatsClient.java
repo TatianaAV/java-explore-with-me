@@ -20,6 +20,7 @@ public class StatsClient {
     private final WebClient webClient;
 
     public StatsClient(@Value("${stats-server.url}") String serverUrl) {
+
         webClient = WebClient.builder()
                 .baseUrl(serverUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -27,6 +28,7 @@ public class StatsClient {
     }
 
     public void addEndpointHit(EndpointDto endpointDto) {
+        log.info("StatsClient addEndpointHit  {}", endpointDto);
         webClient.post()
                 .uri("/hit")
                 .body(Mono.just(endpointDto), EndpointDto.class)
@@ -48,7 +50,9 @@ public class StatsClient {
             List<String> uris,
             Boolean unique
     ) {
+
         String paramsUri = uris.stream().reduce("", (result, uri) -> result + "&uris=" + uri);
+        log.info("StatsClient getStats paramsUri {}", paramsUri);
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/stats")

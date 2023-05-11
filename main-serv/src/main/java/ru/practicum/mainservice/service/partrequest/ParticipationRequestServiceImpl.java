@@ -123,18 +123,17 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                         /*отключена пре-модерация заявок, то подтверждение заявок не требуется*/
                         if (participantLimit == 0 || requestModeration.equals(false)) {
                             request.setStatus(ParticipationRequestDto.StatusRequest.CONFIRMED);
+                            event.setConfirmedRequests(eventParticipants++);
                             confirmedRequests.add(requestMapper.toRequestDto(request));
+                            event.setConfirmedRequests(eventParticipants++);
                             eventRequests.remove(requestId);
-
 
                         } else if (participantLimit >= 1 && participantLimit > eventParticipants) {
                             /* нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)*/
                             request.setStatus(ParticipationRequestDto.StatusRequest.CONFIRMED);
                             confirmedRequests.add(requestMapper.toRequestDto(request));
+                            event.setConfirmedRequests(eventParticipants++);
                             eventRequests.remove(requestId);
-                            eventParticipants++;
-                            event.setConfirmedRequests(eventParticipants);
-
 
                         } else {
                             /* если при подтверждении данной заявки, лимит заявок для события исчерпан,
@@ -143,7 +142,9 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                                 Set<Map.Entry<Long, ParticipationRequest>> set = eventRequests.entrySet();
                                 for (Map.Entry<Long, ParticipationRequest> me : set) {
                                     var requestForRejectedRequests = me.getValue();
-                                    requestForRejectedRequests.setStatus(ParticipationRequestDto.StatusRequest.REJECTED);
+                                    if (requestForRejectedRequests.getStatus().equals(ParticipationRequestDto.StatusRequest.PENDING)) {
+                                        requestForRejectedRequests.setStatus(ParticipationRequestDto.StatusRequest.REJECTED);
+                                    }
                                 }
                             }
                             throw new NotValidatedExceptionConflict("Достигнут лимит мест на событие");
@@ -159,9 +160,11 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                         } else if (participantLimit >= 1 && participantLimit > eventParticipants) {
                             request.setStatus(ParticipationRequestDto.StatusRequest.REJECTED);
                             rejectedRequests.add(requestMapper.toRequestDto(request));
+                            --eventParticipants;
                             eventRequests.remove(requestId);
-                            eventParticipants--;
-                            event.setConfirmedRequests(eventParticipants);
+                            if (event.getConfirmedRequests() > 1) {
+                                event.setConfirmedRequests(eventParticipants);
+                            }
                         }
                         break;
                     default:

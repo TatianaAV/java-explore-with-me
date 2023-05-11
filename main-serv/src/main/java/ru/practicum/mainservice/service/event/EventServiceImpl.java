@@ -14,10 +14,7 @@ import ru.practicum.mainservice.model.Category;
 import ru.practicum.mainservice.model.Event;
 import ru.practicum.mainservice.model.Location;
 import ru.practicum.mainservice.model.User;
-import ru.practicum.mainservice.repository.CategoryRepository;
-import ru.practicum.mainservice.repository.EventRepository;
-import ru.practicum.mainservice.repository.ParticipationRequestRepository;
-import ru.practicum.mainservice.repository.UserRepository;
+import ru.practicum.mainservice.repository.*;
 import ru.practicum.statsclientapp.statsclient.StatsClient;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +34,7 @@ public class EventServiceImpl implements EventService {
 
 
     private final EventRepository eventRepository;
+    private final EventCustomRepository eventCustomRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ParticipationRequestRepository requestRepository;
@@ -67,8 +65,10 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> getEvents(Long userId, Integer from, Integer size) {
         List<Event> events = eventRepository.findAllByInitiator_IdOrderByEventDateAsc(userId, PageRequest.of(from / size, size));
         EventStatisticsGet.addViewsAndConfirmedRequestsToEvents(events, statsClient, requestRepository);
-
-        return eventMapper.toShortEventList(events);
+        return events
+                .stream()
+                .map(eventMapper::toEventShortDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -136,12 +136,12 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
-
+        log.info("uri {}", request.getRequestURI());
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Событие не найдено"));
-        sendStatistics(request);
-        EventStatisticsGet.addViewsAndConfirmedRequestsToEvents(List.of(event), statsClient, requestRepository);
 
+        EventStatisticsGet.addViewsAndConfirmedRequestsToEvents(List.of(event), statsClient, requestRepository);
+        sendStatistics(request);
         return eventMapper.toEventFullDto(event);
     }
 
@@ -166,7 +166,10 @@ public class EventServiceImpl implements EventService {
                 && onlyAvailable == null
         ) {
             List<Event> events = eventRepository.findByStateOrderByEventDateDesc(PUBLISHED, PageRequest.of(from / size, size));
-            return eventMapper.toShortEventList(events);
+            return events
+                    .stream()
+                    .map(eventMapper::toEventShortDto)
+                    .collect(Collectors.toList());
         }
 
         List<Event> events = eventRepository
@@ -191,20 +194,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public List<EventFullDto> getEventsByAdminWithFilter(EntenteParams ententeParams) {
-
-        List<Long> ids = ententeParams.getIds();
-        Integer from = ententeParams.getFrom();
-        Integer size = ententeParams.getSize();
-        EventFullDto.StateEvent states = fromValue(ententeParams.getText());
-        Long categories = ententeParams.getCategories();
-        LocalDateTime rangeStart = ententeParams.getRangeStart();
-        LocalDateTime rangeEnd = ententeParams.getRangeEnd();
-
-        List<Event> events = eventRepository.findEventByAdminWithFilter(ids, states, categories, rangeStart, rangeEnd, PageRequest.of(from / size, size));
+        List<Event> events = eventCustomRepository.findEventByAdminWithFilter(ententeParams);
         EventStatisticsGet.addViewsAndConfirmedRequestsToEvents(events, statsClient, requestRepository);
-
-        return eventMapper.toEventFullDtoList(events);
+        return events
+                .stream()
+                .map(eventMapper::toEventFullDto)
+                .collect(Collectors.toList());
     }
 
 

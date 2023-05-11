@@ -85,11 +85,10 @@ public class EventRequestStatusUpdateRequest {
     @Override
     public String toString() {
 
-        String sb = "class EventRequestStatusUpdateRequest {\n" +
+        return "class EventRequestStatusUpdateRequest {\n" +
                 "    requestIds: " + toIndentedString(requestIds) + "\n" +
                 "    status: " + toIndentedString(status) + "\n" +
                 "}";
-        return sb;
     }
 
     private String toIndentedString(Object o) {

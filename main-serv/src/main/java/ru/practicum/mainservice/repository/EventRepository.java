@@ -16,10 +16,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByStateOrderByEventDateDesc(EventFullDto.StateEvent stateEvent, Pageable pageable);
 
-    @Query("select e from Event e " +
-            "where e.initiator.id in ?1 or e.state = ?2 and e.category.id = ?3 and e.eventDate between ?4 and ?5")
-    List<Event> findEventByAdminWithFilter(List<Long> ids, EventFullDto.StateEvent state, @Nullable Long idCategory, @Nullable LocalDateTime eventDateStart, @Nullable LocalDateTime eventDateEnd, PageRequest pageable);
-
     @Query("SELECT e FROM Event e " +
             "WHERE LOWER(e.title) LIKE LOWER(CONCAT('%', ?1, '%')) " +
             "OR LOWER(e.annotation) LIKE LOWER(CONCAT('%', ?2, '%')) " +

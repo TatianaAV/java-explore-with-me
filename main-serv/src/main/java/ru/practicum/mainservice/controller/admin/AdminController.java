@@ -1,5 +1,10 @@
 package ru.practicum.mainservice.controller.admin;
 
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,12 +24,12 @@ import ru.practicum.mainservice.service.compilation.CompilationService;
 import ru.practicum.mainservice.service.event.EventService;
 import ru.practicum.mainservice.service.user.UserService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import java.util.List;
-
+/**
+ * main-service приложения explore-with-me.
+ * AdminController
+ *  <a href="http://localhost:8080/admin">http://localhost:8080/admin</a>
+ *
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -123,14 +128,6 @@ public class AdminController {
                                                   @Positive @RequestParam(name = "size", defaultValue = "10") Integer size,
                                                   HttpServletRequest request) {
         log.info("GET AdminApiController/ getEventsWithFilter");
-        EntenteParams ententeParams = new EntenteParams(
-                ids,
-                states,
-                categories,
-                EntenteParams.ofStart(rangeStart),
-                EntenteParams.ofEnd(rangeEnd),
-                from,
-                size);
         log.info("ids: {}", ids);
         log.info("states: {}", states);
         log.info("categories: {}", categories);
@@ -141,6 +138,14 @@ public class AdminController {
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
 
+        EntenteParams ententeParams = new EntenteParams(
+                ids,
+                states,
+                categories,
+                EntenteParams.ofStart(rangeStart),
+                EntenteParams.ofEnd(rangeEnd),
+                from,
+                size);
         return eventService.getEventsByAdminWithFilter(ententeParams);
     }
 }

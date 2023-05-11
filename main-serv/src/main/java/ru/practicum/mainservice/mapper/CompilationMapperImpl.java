@@ -27,6 +27,7 @@ public class CompilationMapperImpl implements CompilationMapper {
             List<Compilation> compilationList = entry.getValue();
             Boolean pinned = compilationList.get(0).getTitle().getPined();
             String title = compilationList.get(0).getTitle().getTitle();
+
             List<EventShortDto> events = compilationList.stream()
                     .map(comp -> new EventShortDto(
                             comp.getEvent().getId(),
