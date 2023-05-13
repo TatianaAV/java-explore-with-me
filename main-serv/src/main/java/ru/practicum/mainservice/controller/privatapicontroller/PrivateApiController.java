@@ -58,7 +58,6 @@ public class PrivateApiController {
                                          HttpServletRequest request) {
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
-        //statisticService.addEndpointHit(request);
         log.info("GET PrivateApiController/createEvent/ userId {}", userId);
         return eventService.getEventByUserFullById(userId, eventId);
     }
@@ -96,7 +95,7 @@ public class PrivateApiController {
 
     @PatchMapping("{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
-    public EventRequestStatusUpdateResult changeRequestStatus(@Validated @RequestBody EventRequestStatusUpdateRequest body,
+    public EventRequestStatusUpdateResult changeRequestStatus(@Valid @RequestBody EventRequestStatusUpdateRequest body,
                                                               @PathVariable Long userId,
                                                               @PathVariable Long eventId) {
         return requestService.changeRequestStatus(body, userId, eventId);
