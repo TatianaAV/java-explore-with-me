@@ -50,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto updateCategory(Long catId, NewCategoryDto updateCategory) {
         log.info("PATCH AdminController/ admin/categories/{}, {}", catId, updateCategory);
-        Category findCategory = categoryRepository.findById(catId).orElseThrow(() -> new NotFoundException(""));
+        Category findCategory = categoryRepository.findById(catId).orElseThrow(() -> new NotFoundException("Not found category"));
         findCategory.setName(updateCategory.getName());
         return categoryMapper.toCategoryDto(findCategory);
     }
