@@ -28,7 +28,7 @@ public class Event {
     @Column(length = 2000, nullable = false)
     private String annotation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.Nullable;
 import ru.practicum.mainservice.dto.event.EventFullDto;
 import ru.practicum.mainservice.model.Event;
+import ru.practicum.mainservice.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,7 +31,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByInitiator_IdOrderByEventDateAsc(Long userId, Pageable pageable);
 
-    Event findEventByIdAndInitiator_Id(Long eventId, Long userId);
+    Event findEventByIdAndInitiator(Long eventId, User user);
 
     Optional<Event> findEventByIdAndInitiator_IdAndStateNotOrEventDateBefore(Long eventId, Long userId, EventFullDto.StateEvent state, LocalDateTime eventDate);
 }

@@ -50,8 +50,11 @@ public class EventCustomRepository {
         if (idCategory != null) {
             predicates.add(cb.equal(root.get("category").get("id"), idCategory));
         }
-        if (rangeStart != null && rangeEnd != null) {
+        if (rangeStart != null) {
             predicates.add(cb.greaterThanOrEqualTo(root.get("eventDate"), rangeStart));
+        }
+
+        if (rangeEnd != null) {
             predicates.add(cb.lessThanOrEqualTo(root.get("eventDate"), rangeEnd));
         }
 

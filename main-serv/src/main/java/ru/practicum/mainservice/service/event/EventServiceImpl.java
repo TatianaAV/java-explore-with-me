@@ -73,8 +73,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getEventByUserFullById(Long userId, Long eventId) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-        Event event = eventRepository.findEventByIdAndInitiator_Id(eventId, userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        Event event = eventRepository.findEventByIdAndInitiator(eventId, user);
         EventStatisticsGet.addViewsAndConfirmedRequestsToEvents(List.of(event), statsClient, requestRepository);
 
         return eventMapper.toEventFullDto(event);
@@ -203,7 +203,6 @@ public class EventServiceImpl implements EventService {
                 .map(eventMapper::toEventFullDto)
                 .collect(Collectors.toList());
     }
-
 
     private Event updateEvent(Event event, UpdateEventRequest updateEvent) {
         if (updateEvent == null) {
