@@ -2,7 +2,6 @@ package ru.practicum.mainservice.dto.comment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
