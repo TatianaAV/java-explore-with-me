@@ -2,14 +2,17 @@ package ru.practicum.mainservice.controller.comments;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.dto.comment.CommentDto;
+import ru.practicum.mainservice.dto.comment.CommentFullDto;
 import ru.practicum.mainservice.dto.comment.NewCommentDto;
 import ru.practicum.mainservice.dto.comment.UpdateCommentDto;
-import ru.practicum.mainservice.service.CommentService;
+import ru.practicum.mainservice.service.comment.CommentService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -29,7 +32,7 @@ public class PrivateCommentApiController {
                                      HttpServletRequest request) {
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
-        log.info("GET PublicApiController/ getEventFullById/ eventId {}", commentId);
+        log.info("GET PrivateCommentApiController/ getEventFullById/ eventId {}", commentId);
         return commentService.getCommentById(commentId, request);
     }
 
@@ -39,77 +42,103 @@ public class PrivateCommentApiController {
      */
     @GetMapping("/comment")
     @ResponseStatus(HttpStatus.OK)
-    public List<CommentDto> getCommentWithFilter(@RequestParam(name = "text", required = false) String text,
-                                                 @RequestParam(name = "rangeStart", required = false) String rangeStart,
-                                                 @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
-                                                 @RequestParam(name = "sort", required = false) String sort,
+    public List<CommentDto> getCommentWithFilter(@RequestParam(required = false) Long eventId,
+                                                 @RequestParam(name = "text", required = false) String text,
                                                  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size,
                                                  HttpServletRequest request) {
-        log.info("GET PublicApiController/ getEventsWithFilter");
+        log.info("GET PrivateCommentApiController/ getEventsWithFilter");
 
+        log.info("eventId: {}", eventId);
         log.info("text: {}", text);
-        log.info("sort: {}", sort);
         log.info("from: {}", from);
         log.info("size: {}", size);
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}, {}, {}", request.getProtocol(), request.getHttpServletMapping(), request.getRequestURI());
 
-        return commentService.getCommentWithFilter(text, rangeStart, rangeEnd, sort, from, size);
+        return commentService.getCommentWithFilter(eventId, text, from, size);
     }
 
     /**
-     * 3. Добавление комментария к событию авторизованным пользователем с обязательным одобрением администратора
+     * 3. Добавление комментария к событию авторизованным пользователем
+     * с обязательным одобрением администратора.
+     * При отсутствии обязательных параметров ошибка
      */
-    @PostMapping("/comment/user/{userId}")
+    @PostMapping("/comment")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentDto addComment(@PathVariable Long userId,
-                                 @RequestParam Long eventId,
-                                 @RequestParam NewCommentDto comment,
+    public CommentDto addComment(@RequestParam Long userId,
+                                 @Valid @RequestBody NewCommentDto comment,
                                  HttpServletRequest request) {
-        log.info("POST PrivateApiController/ addParticipationRequest/ userId {}", userId);
+        log.info("POST PrivateCommentApiController/ addComment/ userId {}", userId);
+        log.info("POST PrivateCommentApiController/ addComment/ userId {}", userId);
         log.info("PATH {}, queryString {}", request.getRequestURI(), request.getQueryString());
-        return commentService.createComment(userId, eventId, comment);
+        return commentService.createComment(userId, comment);
     }
 
     /**
-     * 4. Обновление комментария к событию авторизованным пользователем с обязательным одобрением администратора
+     * 4. Получение
+     * CommentFullDto комментария пользователем
+     */
+    @GetMapping("/comment/{commentId}/user")
+    @ResponseStatus(HttpStatus.OK)
+    public CommentFullDto getCommentUserById(@PathVariable Long commentId,
+                                             @RequestParam Long userId) {
+        log.info("GET PrivateCommentApiController/ getCommentUserById/ commentId {}", commentId);
+        log.info("GET PrivateCommentApiController/ getCommentUserById/ userId {}", userId);
+        return commentService.getCommentUserById(commentId, userId);
+    }
+
+    /**
+     * 5. Получение
+     * CommentFullDto всех комментариев добавленных текущим пользователем
+     */
+    @GetMapping("/comment/user")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CommentFullDto> getCommentUserById(@RequestParam Long userId,
+                                                   @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                   @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        log.info("GET PrivateCommentApiController/ getCommentUserById/ userId {}", userId);
+        return commentService.getAllUserById(userId, PageRequest.of(from / size, size));
+    }
+
+    /**
+     * 6. Обновление комментария к событию авторизованным пользователем с обязательным одобрением администратора
      */
 
     @PatchMapping("comment/{commentId}/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public CommentDto updateComment(@RequestParam UpdateCommentDto updateCommentDto,
-                                    @PathVariable String commentId,
-                                    @PathVariable String userId) {
-        return commentService.updateComment(commentId, userId, updateCommentDto);
+    public CommentFullDto updateComment(@Valid @RequestBody UpdateCommentDto updateCommentDto,
+                                    @PathVariable Long commentId,
+                                    @PathVariable Long userId) {
+        return commentService.updateComment(userId, commentId, updateCommentDto);
     }
 
     /**
-     * 5. Удаление комментария пользователем
+     * 7. Удаление комментария пользователем
      */
     @DeleteMapping("comment/{commentId}/delete")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteCommentById(@PathVariable String commentId,
-                                  @RequestParam String userId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCommentById(@PathVariable Long commentId,
+                                  @RequestParam Long userId) {
         commentService.deleteComment(commentId, userId);
     }
 
     /**
-     * 6. Подтверждение публикации комментария к событию администратором
+     * 8. Подтверждение публикации комментария к событию администратором
      */
-    @PatchMapping("comment/admin/status")
+    @PatchMapping("comment/{commentId}/admin")
     @ResponseStatus(HttpStatus.OK)
-    public CommentDto changeStatus(@RequestParam String statusComment,
-                                   @RequestParam Long commentId) {
-        return commentService.changeCommentByAdmin(commentId, statusComment);
+    public CommentDto publishComment(@RequestParam String state,
+                                     @PathVariable Long commentId) {
+        return commentService.publishComment(commentId, state);
     }
 
     /**
-     * 7. Подтверждение публикации комментария к событию администратором
+     * 9. Удаление комментария администратором
      */
-    @DeleteMapping("comment/{commentId}/admin/delete")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteCommentByAdmin(@PathVariable String commentId) {
-        commentService.deleteCommentByAdmin(commentId);
+    @PatchMapping("comment/{commentId}/admin/delete")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public CommentFullDto deleteCommentByAdmin(@PathVariable Long commentId) {
+        return commentService.deleteCommentByAdmin(commentId);
     }
 }

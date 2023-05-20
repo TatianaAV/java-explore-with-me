@@ -10,7 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.mainservice.dto.comment.StateComment;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Setter
@@ -26,13 +25,12 @@ public class Comment {
     @Column(name = "id", unique = true)
     private Long id;
 
-    @NotBlank(message = "Имя отсутствует")
-    @Column(name = "text", nullable = false, length = 20000, unique = true)
+    @Column(name = "text", nullable = false, length = 2000, unique = true)
     private String text;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User commentator;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
@@ -45,6 +43,11 @@ public class Comment {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state_comment", length = 10, nullable = false)
-    private StateComment stateComment;
+    private StateComment state;
 
-}
+    @Column(name = "update")
+    private Boolean update;
+
+    @Column(name = "views")
+    private Long views;
+    }

@@ -34,4 +34,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Event findEventByIdAndInitiator(Long eventId, User user);
 
     Optional<Event> findEventByIdAndInitiator_IdAndStateNotOrEventDateBefore(Long eventId, Long userId, EventFullDto.StateEvent state, LocalDateTime eventDate);
+
+    Optional<Event> findEventByIdAndState(Long eventId, EventFullDto.StateEvent state);
 }
