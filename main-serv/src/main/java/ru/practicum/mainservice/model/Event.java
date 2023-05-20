@@ -30,7 +30,6 @@ public class Event {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    @ToString.Exclude
     private Category category;
 
     @Column(name = "confirmed_requests")

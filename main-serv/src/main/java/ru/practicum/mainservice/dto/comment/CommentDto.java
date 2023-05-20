@@ -2,7 +2,6 @@ package ru.practicum.mainservice.dto.comment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.mainservice.dto.user.UserShortDto;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -26,7 +25,7 @@ public class CommentDto {
     @JsonFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss", timezone = "Europe/Moscow")
     private LocalDateTime created;
 
-    private UserShortDto commentator;
+    private CommentDto.UserShortDto commentator;
 
     private StateComment state;
 
@@ -39,6 +38,17 @@ public class CommentDto {
     public static class EventDto implements Serializable {
         private Long id;
         private String title;
+    }
+
+    /**
+     * DTO for {@link ru.practicum.mainservice.model.User}
+     */
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserShortDto implements Serializable {
+        private Long id;
+        private String name;
     }
 }
 

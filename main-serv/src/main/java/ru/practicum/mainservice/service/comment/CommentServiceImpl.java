@@ -14,10 +14,7 @@ import ru.practicum.mainservice.mapper.CommentMapper;
 import ru.practicum.mainservice.model.Comment;
 import ru.practicum.mainservice.model.Event;
 import ru.practicum.mainservice.model.User;
-import ru.practicum.mainservice.repository.CommentCustomRepository;
-import ru.practicum.mainservice.repository.CommentRepository;
-import ru.practicum.mainservice.repository.EventRepository;
-import ru.practicum.mainservice.repository.UserRepository;
+import ru.practicum.mainservice.repository.*;
 import ru.practicum.statsclientapp.statsclient.StatsClient;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +29,7 @@ import java.util.Optional;
 public class CommentServiceImpl implements CommentService {
 
     private final UserRepository userRepository;
-    private final EventRepository eventRepository;
+    private final CommentEventRepository eventRepository;
     private final CommentRepository commentRepository;
     private final CommentCustomRepository customRepository;
     private final CommentMapper commentMapper;
