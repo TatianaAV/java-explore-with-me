@@ -3,8 +3,8 @@ package ru.practicum.mainservice.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
+import ru.practicum.mainservice.dto.user.NewUser;
 import ru.practicum.mainservice.model.User;
-import ru.practicum.mainservice.dto.user.NewUserRequest;
 import ru.practicum.mainservice.dto.user.UserDto;
 
 import java.util.List;
@@ -19,5 +19,5 @@ public interface UserMapper {
     UserDto toUserDto(User user);
 
     @Mapping(target = "id", ignore = true)
-    User toUser(NewUserRequest user);
+    User toUser(NewUser user);
 }

@@ -32,9 +32,6 @@ public class Event {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "confirmed_requests")
-    private Integer confirmedRequests;
-
     @Column(name = "created_on")
     @JsonFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss", timezone = "Europe/Moscow")
     @CreationTimestamp
@@ -67,9 +64,6 @@ public class Event {
 
     @Column(name = "request_moderation")
     private Boolean requestModeration;
-
-    @Column(name = "views")
-    private Long views;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", length = 10, nullable = false)

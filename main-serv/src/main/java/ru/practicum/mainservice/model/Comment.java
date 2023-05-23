@@ -47,7 +47,4 @@ public class Comment {
 
     @Column(name = "update")
     private Boolean update;
-
-    @Column(name = "views")
-    private Long views;
     }

@@ -15,6 +15,8 @@ import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
+    Optional<Event> findByIdAndState(Long id, EventFullDto.StateEvent state);
+
     List<Event> findByStateOrderByEventDateDesc(EventFullDto.StateEvent stateEvent, Pageable pageable);
 
     @Query("SELECT e FROM Event e " +
@@ -33,5 +35,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Event findEventByIdAndInitiator(Long eventId, User user);
 
-    Optional<Event> findEventByIdAndInitiator_IdAndStateNotOrEventDateBefore(Long eventId, Long userId, EventFullDto.StateEvent state, LocalDateTime eventDate);
+    Optional<Event> findEventByIdAndInitiator_Id(Long eventId, Long userId);
 }

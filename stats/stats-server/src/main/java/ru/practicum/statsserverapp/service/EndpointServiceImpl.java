@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.statsserverapp.handler.EndpointEmptyAppException;
 import ru.practicum.statsserverapp.handler.NotFoundException;
+import ru.practicum.statsserverapp.handler.ValidateTimeException;
 import ru.practicum.statsserverapp.mapper.EndpointMapper;
 import ru.practicum.statsserverapp.model.App;
 import ru.practicum.statsserverapp.model.Endpoint;
@@ -57,8 +58,9 @@ public class EndpointServiceImpl implements EndpointService {
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         List<ViewStatsDto> stats;
+        validateTimeHits(start, end);
         if (uris == null || uris.isEmpty()) {
-            log.info("uris null equals {}",   uris);
+            log.info("uris null equals {}", uris);
             if (unique.equals(true)) {
                 log.info("findDistinctByTimestampBetween {}", unique);
                 stats = repository.findDistinctByTimestampBetween(start, end, PageRequest.of(0, 1));
@@ -67,7 +69,7 @@ public class EndpointServiceImpl implements EndpointService {
                 stats = repository.findAllByTimestampBetween(start, end);
             }
         } else {
-            log.info("uris not null {}",   uris);
+            log.info("uris not null {}", uris);
             if (unique.equals(true)) {
                 log.info("findDistinctByTimestampBetweenAndUriIn {}", unique);
                 stats = repository.findDistinctByTimestampBetweenAndUriIn(start, end, uris, PageRequest.of(0, 1));
@@ -78,5 +80,11 @@ public class EndpointServiceImpl implements EndpointService {
         }
         log.info("stats.size {}, unique {}, uris {}", stats.size(), unique, uris);
         return stats;
+    }
+
+    private void validateTimeHits(LocalDateTime start, LocalDateTime end) {
+        if (start.isAfter(end)) {
+            throw new ValidateTimeException("Дата начала статистики позже даты конца.");
+        }
     }
 }

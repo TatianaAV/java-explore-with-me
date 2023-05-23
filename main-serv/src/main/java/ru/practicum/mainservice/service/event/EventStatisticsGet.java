@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dto.ViewStatsDto;
 import lombok.extern.slf4j.Slf4j;
-import ru.practicum.mainservice.model.Event;
+import ru.practicum.mainservice.dto.event.EventFullDto;
 import ru.practicum.mainservice.model.ParticipationRequest;
 import ru.practicum.mainservice.repository.ParticipationRequestRepository;
 import ru.practicum.statsclientapp.statsclient.StatsClient;
@@ -27,7 +27,8 @@ public class EventStatisticsGet {
     }
 
     public static void addViewsAndConfirmedRequestsToEvents(
-            List<Event> events,
+            List<EventFullDto> events,
+            Boolean unique,
             StatsClient statsClient,
             ParticipationRequestRepository requestRepository
     ) {
@@ -36,12 +37,12 @@ public class EventStatisticsGet {
         log.info("addViewsAndConfirmedRequestsToEvents requestRepository {}", requestRepository);
 
         addConfirmedRequests(events, requestRepository);
-        addViewsToEvents(events, statsClient);
+        addViewsToEvents(events, unique, statsClient);
     }
 
-    public static void addViewsToEvents(List<Event> events, StatsClient statsClient) {
+    public static void addViewsToEvents(List<EventFullDto> events, Boolean unique, StatsClient statsClient) {
 
-        Map<String, Event> eventsMap = events
+        Map<String, EventFullDto> eventsMap = events
                 .stream()
                 .collect(Collectors.toMap(event -> "/events/" + event.getId(), event -> event));
 
@@ -51,7 +52,7 @@ public class EventStatisticsGet {
                 LocalDateTime.parse("2000-01-01 00:00:00", FORMATTER).format(FORMATTER),
                 LocalDateTime.parse("2050-01-01 00:00:00", FORMATTER).format(FORMATTER),
                 new ArrayList<>(eventsMap.keySet()),
-                false
+                unique
         ).getBody();
 
         assert rawStatistics != null;
@@ -64,15 +65,19 @@ public class EventStatisticsGet {
                 eventsMap.get(statistic.getUri()).setViews(statistic.getHits());
             }
         });
+       /* eventsMap.values().stream()
+                .filter(event -> event.getViews() == null)
+                .forEach(event -> event.setViews(0L));*/
+
     }
 
-    public static void addConfirmedRequests(List<Event> events, ParticipationRequestRepository requestRepository) {
+    public static void addConfirmedRequests(List<EventFullDto> events, ParticipationRequestRepository requestRepository) {
         Map<Long, Integer> requestsCountMap = new HashMap<>();
         log.info("addConfirmedRequests events {}", events);
         log.info("addViewsAndConfirmedRequestsToEvents requestRepository {}", requestRepository);
         List<ParticipationRequest> requests = requestRepository.findAllConfirmedByEventIdIn(events
                 .stream()
-                .map(Event::getId)
+                .map(EventFullDto::getId)
                 .collect(Collectors.toList())
         );
         log.info("addViewsAndConfirmedRequestsToEvents requests {}", requests.toString());

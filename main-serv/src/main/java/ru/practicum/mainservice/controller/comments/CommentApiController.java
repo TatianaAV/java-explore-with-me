@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.dto.comment.CommentDto;
 import ru.practicum.mainservice.dto.comment.CommentFullDto;
@@ -20,7 +21,8 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class PrivateCommentApiController {
+@Validated
+public class CommentApiController {
     private final CommentService commentService;
 
     /**
@@ -56,7 +58,7 @@ public class PrivateCommentApiController {
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}, {}, {}", request.getProtocol(), request.getHttpServletMapping(), request.getRequestURI());
 
-        return commentService.getCommentWithFilter(eventId, text, from, size);
+        return commentService.getCommentWithFilter(eventId, text, from, size, request);
     }
 
     /**
@@ -69,7 +71,6 @@ public class PrivateCommentApiController {
     public CommentDto addComment(@RequestParam Long userId,
                                  @Valid @RequestBody NewCommentDto comment,
                                  HttpServletRequest request) {
-        log.info("POST PrivateCommentApiController/ addComment/ userId {}", userId);
         log.info("POST PrivateCommentApiController/ addComment/ userId {}", userId);
         log.info("PATH {}, queryString {}", request.getRequestURI(), request.getQueryString());
         return commentService.createComment(userId, comment);

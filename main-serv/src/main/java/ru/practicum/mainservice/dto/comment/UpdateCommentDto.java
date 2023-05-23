@@ -17,6 +17,6 @@ public class UpdateCommentDto {
     private Long id;
 
     @NotBlank(message = "Комментарий не может быть пустым")
-    @Size(max = 200, message = "Имя не может быть длиннее 200 символов")
+    @Size(min = 4, max = 200, message = "Комментарий не может быть длиннее 200 символов")
     private String text;
 }

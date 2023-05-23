@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import ru.practicum.mainservice.dto.event.EntenteParams;
-import ru.practicum.mainservice.dto.user.NewUserRequest;
+import ru.practicum.mainservice.dto.user.NewUser;
 import ru.practicum.mainservice.dto.user.UserDto;
 import ru.practicum.mainservice.mapper.UserMapper;
 import ru.practicum.mainservice.model.User;
@@ -26,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserDto createUser(NewUserRequest createUser) {
+    public UserDto createUser(NewUser createUser) {
         log.info("AdminServiceImpl/users/createUser {}", createUser);
         User user = userMapper.toUser(createUser);
         return userMapper.toUserDto(userRepository.save(user));
@@ -38,9 +41,25 @@ public class UserServiceImpl implements UserService {
         List<Long> ids = ententeParams.getIds();
         Integer from = ententeParams.getFrom();
         Integer size = ententeParams.getSize();
-        Page<User> users = userRepository.findAllByIdIn(ids, PageRequest.of(from, size));
-        return userMapper.mapToUserDto(userMapper.mapToUserDto(users));
+      /*  List<User> users;
+        if (ids == null) {
+            users = userMapper.mapToUserDto(userRepository.findAll(PageRequest.of(from / size, size)));
+        } else {
+            users = userRepository.findAllByIdIn(ids, PageRequest.of(from / size, size));
+        }
+        return userMapper.mapToUserDto(users);*/
+        List<User> users;
+        Sort sortById = Sort.by(Sort.Direction.ASC, "id");
+        Pageable page = PageRequest.of(from / size, size, sortById);
+        if (ids == null || CollectionUtils.isEmpty(ids)) {
+            Page<User> usersPage = userRepository.findAll(page);
+            users = usersPage.getContent();
+        } else {
+            users = userRepository.findAllByIdIn(ids, page);
+        }
+        return userMapper.mapToUserDto(users);
     }
+
 
     @Transactional
     @Override

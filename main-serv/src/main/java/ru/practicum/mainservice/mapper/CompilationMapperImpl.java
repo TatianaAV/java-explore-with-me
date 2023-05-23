@@ -3,12 +3,12 @@ package ru.practicum.mainservice.mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import ru.practicum.mainservice.dto.category.CategoryDto;
 import ru.practicum.mainservice.dto.compilation.CompilationDto;
-import ru.practicum.mainservice.dto.event.EventShortDto;
-import ru.practicum.mainservice.dto.user.UserShortDto;
+import ru.practicum.mainservice.dto.event.EventFullDto;
 import ru.practicum.mainservice.model.Compilation;
 import ru.practicum.mainservice.model.CompilationTitle;
+import ru.practicum.mainservice.repository.ParticipationRequestRepository;
+import ru.practicum.mainservice.service.event.EventStatisticsGet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CompilationMapperImpl implements CompilationMapper {
 
-    public List<CompilationDto> toCompilationDto(Map<Long, List<Compilation>> compilationSaved) {
+    private final EventMapper eventMapper;
+
+
+    public List<CompilationDto> toCompilationDto(Map<Long, List<Compilation>> compilationSaved, ParticipationRequestRepository participationRequestRepository) {
         List<CompilationDto> compilationDtoList = new ArrayList<>();
         for (Map.Entry<Long, List<Compilation>> entry : compilationSaved.entrySet()) {
             CompilationDto compilationDto = new CompilationDto();
@@ -27,8 +30,12 @@ public class CompilationMapperImpl implements CompilationMapper {
             List<Compilation> compilationList = entry.getValue();
             Boolean pinned = compilationList.get(0).getTitle().getPined();
             String title = compilationList.get(0).getTitle().getTitle();
+            List<EventFullDto> events = compilationList.stream().map(
+                            compilation -> eventMapper.toEventFullDto(compilation.getEvent()))
+                    .collect(Collectors.toList());
+            EventStatisticsGet.addConfirmedRequests(events, participationRequestRepository);
 
-            List<EventShortDto> events = compilationList.stream()
+           /* compilationList.stream()
                     .map(comp -> new EventShortDto(
                             comp.getEvent().getId(),
                             comp.getEvent().getTitle(),
@@ -38,12 +45,12 @@ public class CompilationMapperImpl implements CompilationMapper {
                             comp.getEvent().getEventDate(),
                             new UserShortDto(comp.getEvent().getInitiator().getId(), comp.getEvent().getInitiator().getName()),
                             comp.getEvent().getPaid()))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList());*/
 
             compilationDto.setId(id);
             compilationDto.setPinned(pinned);
             compilationDto.setTitle(title);
-            compilationDto.setEvents(events);
+            compilationDto.setEvents(eventMapper.toShortEventFullList(events));
             compilationDtoList.add(compilationDto);
         }
         return compilationDtoList;

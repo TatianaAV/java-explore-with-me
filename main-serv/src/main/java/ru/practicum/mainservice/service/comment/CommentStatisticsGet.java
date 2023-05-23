@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dto.ViewStatsDto;
 import lombok.extern.slf4j.Slf4j;
-import ru.practicum.mainservice.model.Comment;
+import ru.practicum.mainservice.dto.comment.CommentFullDto;
 import ru.practicum.statsclientapp.statsclient.StatsClient;
 
 import java.time.LocalDateTime;
@@ -23,9 +23,9 @@ public class CommentStatisticsGet {
         throw new IllegalStateException("Utility class");
     }
 
-    public static void addViewsToComments(List<Comment> comments, StatsClient statsClient) {
+    public static void addViewsToComments(List<CommentFullDto> comments, StatsClient statsClient) {
 
-        Map<String, Comment> commentMap = comments
+        Map<String, CommentFullDto> commentMap = comments
                 .stream()
                 .collect(Collectors.toMap(comment -> "/comment/" + comment.getId(), comment -> comment));
 

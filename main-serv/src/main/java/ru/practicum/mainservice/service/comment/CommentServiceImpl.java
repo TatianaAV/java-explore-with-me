@@ -47,10 +47,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<CommentDto> getCommentWithFilter(Long eventId, String text, Integer from, Integer size) {
+    public List<CommentDto> getCommentWithFilter(Long eventId, String text, Integer from, Integer size, HttpServletRequest request) {
         log.info("CommentServiceImpl/getCommentWithFilter/eventId {}", eventId);
         log.info("CommentServiceImpl/getCommentWithFilter/from {}", from);
         log.info("CommentServiceImpl/getCommentWithFilter/size {}", size);
+        sendStatistics(request);
         List<Comment> commentDtoList = customRepository.findCommentWithFilter(eventId, text, StateComment.PUBLISHED, from, size);
         return commentMapper.toCommentDtoList(commentDtoList);
     }
@@ -90,10 +91,10 @@ public class CommentServiceImpl implements CommentService {
     public CommentFullDto getCommentUserById(Long commentId, Long userId) {
         log.info("CommentServiceImpl/getCommentUserById/userId {}", userId);
         log.info("CommentServiceImpl/getCommentUserById/commentId {}", commentId);
-        Comment comment = commentRepository.findByIdAndCommentator_Id(commentId, userId)
-                .orElseThrow(() -> new NotFoundException("Комментарий не найден."));
+        CommentFullDto comment = commentMapper.toCommentFullDto(commentRepository.findByIdAndCommentator_Id(commentId, userId)
+                .orElseThrow(() -> new NotFoundException("Комментарий не найден.")));
         CommentStatisticsGet.addViewsToComments(List.of(comment), statsClient);
-        return commentMapper.toCommentFullDto(comment);
+        return comment;
     }
 
     @Override
@@ -101,9 +102,9 @@ public class CommentServiceImpl implements CommentService {
         log.info("CommentServiceImpl/getAllUserById/commentId {}", userId);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден. Войдите или зарегистрируйтесь."));
-        List<Comment> comments = commentRepository.findAllByCommentator(user, pageRequest);
+        List<CommentFullDto> comments = commentMapper.toCommentFullDtoList(commentRepository.findAllByCommentator(user, pageRequest));
         CommentStatisticsGet.addViewsToComments(comments, statsClient);
-        return commentMapper.toCommentFullDtoList(comments);
+        return comments;
     }
 
     @Override

@@ -8,8 +8,10 @@ import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.mainservice.model.Location;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -19,14 +21,18 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewEventDto {
+
     public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    @NotNull(message = "Краткое описание события.  max: 2000, min: 20")
+    @NotBlank(message = "Краткое описание события. Не может быть пустым")
+    @Size(min = 20, max = 2000, message = "Краткое описание события. Не может быть меньше : 20")
     private String annotation;
+
     @Positive
     private Long category;
 
-    @NotNull(message = "Полное описание события.  max: 7000, min: 20")
+    @NotBlank(message = "Полное описание события.  max: 7000, min: 20")
+    @Size(min = 20, max = 7000,  message = "Полное описание события.  max: 7000, min: 20")
     private String description;
 
     @NotNull
@@ -36,12 +42,11 @@ public class NewEventDto {
     @NotNull
     private Location location;
 
-    @NotNull
-    private Boolean paid;
+    private Boolean paid = false;
 
-    private Integer participantLimit;
+    private Integer participantLimit = 0;
 
-    private Boolean requestModeration;
+    private Boolean requestModeration = true;
 
     @NotNull(message = "Заголовок события.  max: 120, min: 3")
     private String title;
