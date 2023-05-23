@@ -58,8 +58,7 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * У одного события один комментарий от пользователя.
-     * * При попытке создать еще один комментарий ошибка с номером уже существующего комментария
-     * * (или сделать переадресацию на обновление существующего).
+     * * При попытке создать еще один комментарий ошибка с номером уже существующего комментария.
      */
     @Override
     public CommentDto createComment(Long userId, NewCommentDto commentDto) {

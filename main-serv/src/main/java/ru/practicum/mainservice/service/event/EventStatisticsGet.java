@@ -56,7 +56,7 @@ public class EventStatisticsGet {
         ).getBody();
 
         assert rawStatistics != null;
-        log.info("addViewsToEvents rawStatistics {}", rawStatistics.toString());
+        log.info("addViewsToEvents rawStatistics {}", rawStatistics);
         List<ViewStatsDto> statistics = objectMapper.convertValue(rawStatistics, new TypeReference<>() {
         });
         log.info("addViewsToEvents rawStatistics {}", statistics.toString());
@@ -65,9 +65,9 @@ public class EventStatisticsGet {
                 eventsMap.get(statistic.getUri()).setViews(statistic.getHits());
             }
         });
-       /* eventsMap.values().stream()
+        eventsMap.values().stream()
                 .filter(event -> event.getViews() == null)
-                .forEach(event -> event.setViews(0L));*/
+                .forEach(event -> event.setViews(0L));
 
     }
 

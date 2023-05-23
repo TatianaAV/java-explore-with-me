@@ -71,8 +71,16 @@ public class EventCustomRepository {
         return q.getResultList();
     }
 
-    public List<Event> findByEventUserWithFilter(String text, Long idCategory, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, String sort, PageRequest pageable) {
-
+    public List<Event> findByEventUserWithFilter(EntenteParams ententeParams) {
+        String text = ententeParams.getText();
+        String sort = ententeParams.getSort();
+        Integer from = ententeParams.getFrom();
+        Integer size = ententeParams.getSize();
+        Long idCategory = ententeParams.getCategories();
+        Boolean paid = ententeParams.getPaid();
+        LocalDateTime rangeStart = ententeParams.getRangeStart();
+        LocalDateTime rangeEnd = ententeParams.getRangeEnd();
+        Pageable pageable = PageRequest.of(from / size, size);
         validateDataEvent(rangeStart, rangeEnd);
 
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -82,9 +90,11 @@ public class EventCustomRepository {
         List<Predicate> predicates = new ArrayList<>();
 
         if (text != null) {
-            //predicates.add(cb.like(cb.lower(root.get("title")), "%" + text.toLowerCase() + "%"));
-            predicates.add(cb.like(cb.lower(root.get("annotation")), "%" + text.toLowerCase() + "%"));
+            Predicate predicateTitle = cb.like(cb.lower(root.get("title")), "%" + text.toLowerCase() + "%");
+            Predicate predicateAnnotation = cb.like(cb.lower(root.get("annotation")), "%" + text.toLowerCase() + "%");
+            predicates.add(cb.or(predicateTitle, predicateAnnotation));
         }
+
 
         if (idCategory != null) {
             predicates.add(cb.equal(root.get("category").get("id"), idCategory));

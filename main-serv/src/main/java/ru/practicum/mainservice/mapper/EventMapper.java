@@ -15,7 +15,6 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = UserMapper.class)
 public interface EventMapper {
 
-    @Mapping(target = "id", source = "save.id")
     EventFullDto toEventFullDto(Event save);
 
     EventShortDto toEventShortDto(EventFullDto event);
@@ -24,10 +23,7 @@ public interface EventMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", source = "category")
-    @Mapping(target = "state", source = "pending")
-    Event toNewEvent(NewEventDto eventDto, User initiator, Category category, Location location, EventFullDto.StateEvent pending);
-
-    List<EventShortDto> toShortEventList(List<Event> events);
+    Event toNewEvent(NewEventDto eventDto, User initiator, Category category, Location location, EventFullDto.StateEvent state);
 
     List<EventShortDto> toShortEventFullList(List<EventFullDto> events);
 

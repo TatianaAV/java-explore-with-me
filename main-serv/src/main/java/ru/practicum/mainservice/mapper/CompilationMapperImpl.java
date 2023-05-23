@@ -33,19 +33,8 @@ public class CompilationMapperImpl implements CompilationMapper {
             List<EventFullDto> events = compilationList.stream().map(
                             compilation -> eventMapper.toEventFullDto(compilation.getEvent()))
                     .collect(Collectors.toList());
-            EventStatisticsGet.addConfirmedRequests(events, participationRequestRepository);
 
-           /* compilationList.stream()
-                    .map(comp -> new EventShortDto(
-                            comp.getEvent().getId(),
-                            comp.getEvent().getTitle(),
-                            comp.getEvent().getAnnotation(),
-                            new CategoryDto(comp.getEvent().getCategory().getId(), comp.getEvent().getCategory().getName()),
-                            comp.getEvent().getConfirmedRequests(),
-                            comp.getEvent().getEventDate(),
-                            new UserShortDto(comp.getEvent().getInitiator().getId(), comp.getEvent().getInitiator().getName()),
-                            comp.getEvent().getPaid()))
-                    .collect(Collectors.toList());*/
+            EventStatisticsGet.addConfirmedRequests(events, participationRequestRepository);
 
             compilationDto.setId(id);
             compilationDto.setPinned(pinned);

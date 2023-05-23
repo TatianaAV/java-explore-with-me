@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.validation.annotation.Validated;
 import ru.practicum.mainservice.model.Location;
 
 import javax.validation.constraints.NotBlank;
@@ -15,7 +14,6 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Validated
 @Getter
 @Setter
 @NoArgsConstructor

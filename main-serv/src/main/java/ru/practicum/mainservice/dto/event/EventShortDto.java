@@ -3,13 +3,10 @@ package ru.practicum.mainservice.dto.event;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.validation.annotation.Validated;
 import ru.practicum.mainservice.dto.category.CategoryDto;
 import ru.practicum.mainservice.dto.user.UserShortDto;
 
 import java.time.LocalDateTime;
-
-@Validated
 
 @Getter
 @Setter

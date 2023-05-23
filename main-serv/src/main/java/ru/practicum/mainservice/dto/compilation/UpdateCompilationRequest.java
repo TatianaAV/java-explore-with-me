@@ -2,12 +2,10 @@ package ru.practicum.mainservice.dto.compilation;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Size;
 import java.util.List;
 
-@Validated
 @Getter
 @Setter
 public class UpdateCompilationRequest {

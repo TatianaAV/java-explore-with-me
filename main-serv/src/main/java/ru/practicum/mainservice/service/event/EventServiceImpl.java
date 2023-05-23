@@ -20,8 +20,7 @@ import ru.practicum.statsclientapp.statsclient.StatsClient;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.practicum.mainservice.dto.event.EventFullDto.StateEvent.*;
@@ -160,35 +159,13 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> getEventsUserWithFilter(EntenteParams ententeParams, HttpServletRequest request) {
-        Integer from = ententeParams.getFrom();
-        Integer size = ententeParams.getSize();
-        String text = ententeParams.getText();
-        Long categories = ententeParams.getCategories();
-        Boolean paid = ententeParams.getPaid();
-        LocalDateTime rangeStart = ententeParams.getRangeStart();
-        LocalDateTime rangeEnd = ententeParams.getRangeEnd();
         String sort = ententeParams.getSort();
         Boolean onlyAvailable = ententeParams.getOnlyAvailable();
         sendStatistics(request);
 
-      /*  if (text == null
-                && categories == null
-                && paid == null
-                && rangeStart == null
-                && rangeEnd == null
-                && sort == null
-                && onlyAvailable == null
-        ) {
-            List<Event> events = eventRepository.findByStateOrderByEventDateDesc(PUBLISHED, PageRequest.of(from / size, size));
-            return events
-                    .stream()
-                    .map(eventMapper::toEventShortDto)
-                    .collect(Collectors.toList());
-        }*/
-
         List<Event> events = eventCustomRepository
-                .findByEventUserWithFilter(text, categories, paid, rangeStart, rangeEnd, sort, PageRequest.of(from / size, size));
-List<EventFullDto>  eventsFull = events.stream().map(eventMapper::toEventFullDto)
+                .findByEventUserWithFilter(ententeParams);
+        List<EventFullDto> eventsFull = events.stream().map(eventMapper::toEventFullDto)
                 .collect(Collectors.toList());
         EventStatisticsGet.addViewsAndConfirmedRequestsToEvents(eventsFull, true, statsClient, requestRepository);
 
@@ -214,7 +191,7 @@ List<EventFullDto>  eventsFull = events.stream().map(eventMapper::toEventFullDto
     public List<EventFullDto> getEventsByAdminWithFilter(EntenteParams ententeParams) {
         List<EventFullDto> events = eventMapper.toEventFullDtoList(eventCustomRepository.findEventByAdminWithFilter(ententeParams));
         EventStatisticsGet.addViewsAndConfirmedRequestsToEvents(events, true, statsClient, requestRepository);
-       log.info("GetEventsWithFilterByAdmin/ events.get(0). {} ", events.get(0).getConfirmedRequests().toString());
+        log.info("GetEventsWithFilterByAdmin/ events.get(0). {} ", events.get(0).getConfirmedRequests().toString());
         return events;
     }
 

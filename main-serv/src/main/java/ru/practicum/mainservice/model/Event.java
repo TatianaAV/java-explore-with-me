@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity(name = "Event")
 @Table(name = "events")
 public class Event {
@@ -30,6 +29,7 @@ public class Event {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @ToString.Exclude
     private Category category;
 
     @Column(name = "created_on")
