@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.dto.category.CategoryDto;
 import ru.practicum.mainservice.dto.compilation.CompilationDto;
@@ -22,6 +23,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class PublicApiController {
 
     private final CategoryService categoryService;
@@ -63,21 +65,21 @@ public class PublicApiController {
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
         log.info("GET PublicApiController/ getEventFullById/ eventId {}", eventId);
-        return eventService.getEventById(eventId, request);
+        return eventService.getPublicEventById(eventId, request);
     }
 
     @GetMapping("/events")
     @ResponseStatus(HttpStatus.OK)
-    public List<EventShortDto> getEventsWithFilter(@RequestParam(name = "text", required = false) String text,
-                                                   @RequestParam(name = "categories", required = false) Long categories,
-                                                   @RequestParam(name = "paid", required = false) Boolean paid,
-                                                   @RequestParam(name = "rangeStart", required = false) String rangeStart,
-                                                   @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
-                                                   @RequestParam(name = "sort", required = false) String sort,
-                                                   @RequestParam(name = "onlyAvailable", required = false) Boolean onlyAvailable,
-                                                   @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                   @Positive @RequestParam(name = "size", defaultValue = "10") Integer size,
-                                                   HttpServletRequest request) {
+    public List<EventShortDto> getEventsUserWithFilter(@RequestParam(name = "text", required = false) String text,
+                                                       @RequestParam(name = "categories", required = false) Long categories,
+                                                       @RequestParam(name = "paid", required = false) Boolean paid,
+                                                       @RequestParam(name = "rangeStart", required = false) String rangeStart,
+                                                       @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
+                                                       @RequestParam(name = "sort", required = false) String sort,
+                                                       @RequestParam(name = "onlyAvailable", required = false) Boolean onlyAvailable,
+                                                       @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                       @Positive @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                                       HttpServletRequest request) {
         log.info("GET PublicApiController/ getEventsWithFilter");
         EntenteParams ententeParams;
         ententeParams = new EntenteParams(
@@ -102,6 +104,6 @@ public class PublicApiController {
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}, {}, {}", request.getProtocol(), request.getHttpServletMapping(), request.getRequestURI());
 
-        return eventService.getEventsWithFilter(ententeParams, request);
+        return eventService.getEventsUserWithFilter(ententeParams, request);
     }
 }

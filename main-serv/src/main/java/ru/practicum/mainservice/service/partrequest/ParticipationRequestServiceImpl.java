@@ -41,13 +41,13 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие не найдено"));
         User requester = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Войдите или зарегистрируйтесь"));
-        ParticipationRequest requestVerified = validationRequest(new ParticipationRequest(null, LocalDateTime.now(), event, requester, null));
+        ParticipationRequest requestVerified = validationRequest(new ParticipationRequest(null, LocalDateTime.now(), event, requester, null), event);
 
         ParticipationRequest requestSaved = participationRequestRepository.save(requestVerified);
         return requestMapper.toRequestDto(requestSaved);
     }
 
-    private ParticipationRequest validationRequest(ParticipationRequest request) {
+    private ParticipationRequest validationRequest(ParticipationRequest request, Event event) {
         /*нельзя добавить повторный запрос (Ожидается код ошибки 409) error sql unique*/
 //инициатор события не может добавить запрос на участие в своём событии (Ожидается код ошибки 409)
         if (request.getRequester().equals(request.getEvent().getInitiator())) {
@@ -58,11 +58,14 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             throw new NotValidatedExceptionConflict("Событие еще не доступно");
         }
 //если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
-        if (request.getEvent().getParticipantLimit().intValue() == participationRequestRepository.findByEvent_IdCount(request.getEvent().getId())) {
+        if (event.getParticipantLimit() != 0
+                && (request.getEvent().getParticipantLimit().intValue() == participationRequestRepository
+                .findByEvent_IdCount(request.getEvent().getId()))) {
+            request.setStatus(ParticipationRequestDto.StatusRequest.REJECTED);
             throw new NotValidatedExceptionConflict("Достигнут лимит запросов");
         }
 //если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного
-        if (request.getEvent().getRequestModeration().equals(false)) {
+        if (event.getParticipantLimit() == 0 || request.getEvent().getRequestModeration().equals(false)) { //разногласие тестов и ТЗ при исправлении тестов => true премодерация, но лимит 0
             request.setStatus(ParticipationRequestDto.StatusRequest.CONFIRMED);
             return request;
         }
@@ -93,14 +96,15 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие не найдено"));
         Integer eventParticipants = participationRequestRepository.findByEvent_IdCount(eventId);
-        event.setConfirmedRequests(eventParticipants);
         Map<Long, ParticipationRequest> eventRequest = participationRequestRepository.findParticipationRequestByEvent_Initiator_IdAndEvent_Id(userId, eventId)
                 .stream().collect(Collectors.toMap(ParticipationRequest::getId, request -> request));
 
         return mapToEventRequestStatusUpdateResult(eventRequest, eventParticipants, body, event);
     }
 
-    private EventRequestStatusUpdateResult mapToEventRequestStatusUpdateResult(Map<Long, ParticipationRequest> eventRequests, Integer eventParticipants, EventRequestStatusUpdateRequest body, Event event) {
+    private EventRequestStatusUpdateResult mapToEventRequestStatusUpdateResult(
+            Map<Long, ParticipationRequest> eventRequests,
+            Integer eventParticipants, EventRequestStatusUpdateRequest body, Event event) {
 
 
         Integer participantLimit = event.getParticipantLimit();
@@ -110,6 +114,8 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         List<Long> requestIds = body.getRequestIds();
         List<ParticipationRequestDto> confirmedRequests = new ArrayList<>();
         List<ParticipationRequestDto> rejectedRequests = new ArrayList<>();
+        EventRequestStatusUpdateResult eventRequestStatusUpdateResult =
+                new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
 
         for (Long requestId : requestIds) {
             var request = eventRequests.get(requestId);
@@ -123,16 +129,16 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                         /*отключена пре-модерация заявок, то подтверждение заявок не требуется*/
                         if (participantLimit == 0 || requestModeration.equals(false)) {
                             request.setStatus(ParticipationRequestDto.StatusRequest.CONFIRMED);
-                            event.setConfirmedRequests(eventParticipants++);
+                            eventParticipants++;
                             confirmedRequests.add(requestMapper.toRequestDto(request));
-                            event.setConfirmedRequests(eventParticipants++);
+                            eventParticipants++;
                             eventRequests.remove(requestId);
 
                         } else if (participantLimit >= 1 && participantLimit > eventParticipants) {
                             /* нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)*/
                             request.setStatus(ParticipationRequestDto.StatusRequest.CONFIRMED);
                             confirmedRequests.add(requestMapper.toRequestDto(request));
-                            event.setConfirmedRequests(eventParticipants++);
+                            eventParticipants++;
                             eventRequests.remove(requestId);
 
                         } else {
@@ -162,9 +168,6 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                             rejectedRequests.add(requestMapper.toRequestDto(request));
                             --eventParticipants;
                             eventRequests.remove(requestId);
-                            if (event.getConfirmedRequests() > 1) {
-                                event.setConfirmedRequests(eventParticipants);
-                            }
                         }
                         break;
                     default:
@@ -175,7 +178,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             }
         }
         if (eventRequests.isEmpty()) {
-            return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
+            return eventRequestStatusUpdateResult;
         } else {
             Set<Map.Entry<Long, ParticipationRequest>> set = eventRequests.entrySet();
 
@@ -189,10 +192,10 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                 if (request.getStatus().equals(ParticipationRequestDto.StatusRequest.CONFIRMED)) {
                     confirmedRequests.add(requestMapper.toRequestDto(request));
                 }
-                return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
+                return eventRequestStatusUpdateResult;
             }
         }
-        return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
+        return eventRequestStatusUpdateResult;
     }
 
     @Override

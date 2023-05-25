@@ -11,13 +11,16 @@ import ru.practicum.mainservice.dto.compilation.NewCompilationDto;
 import ru.practicum.mainservice.dto.compilation.UpdateCompilationRequest;
 import ru.practicum.mainservice.handler.NotFoundException;
 import ru.practicum.mainservice.mapper.CompilationMapper;
+import ru.practicum.mainservice.mapper.EventMapper;
 import ru.practicum.mainservice.model.Compilation;
 import ru.practicum.mainservice.model.CompilationTitle;
 import ru.practicum.mainservice.model.Event;
 import ru.practicum.mainservice.repository.CompilationRepository;
 import ru.practicum.mainservice.repository.CompilationTitleRepository;
 import ru.practicum.mainservice.repository.EventRepository;
+import ru.practicum.mainservice.repository.ParticipationRequestRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,39 +34,46 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 @Transactional
 public class CompilationServiceImpl implements CompilationService {
+    private final ParticipationRequestRepository participationRequestRepository;
     private final EventRepository eventRepository;
     private final CompilationRepository compilationRepository;
     private final CompilationTitleRepository compilationTitleRepository;
     private final CompilationMapper compilationMapper;
+    private final EventMapper eventMapper;
 
     @Override
     public CompilationDto createCompilation(NewCompilationDto compilationDto) {
-            List<Event> events = eventRepository.findByIdIn(compilationDto.getEvents());
-            String nameCompilation = compilationDto.getTitle();
-            Optional<CompilationTitle> title = compilationTitleRepository.findByTitle(nameCompilation);
-            CompilationTitle newTitle;
-
-            if (title.isEmpty() && events.isEmpty()) {
-                newTitle = compilationTitleRepository.save(new CompilationTitle(compilationDto.getTitle(), compilationDto.getPinned()));
-                return new CompilationDto(newTitle.getId(), newTitle.getPined(), newTitle.getTitle());
-            }
-            if (title.isEmpty()) {
-                newTitle = compilationTitleRepository.save(new CompilationTitle(compilationDto.getTitle(), compilationDto.getPinned()));
-            } else {
-                newTitle = title.orElseThrow(() -> new NotFoundException("CompilationTitle error"));
-            }
-
-            List<Compilation> compilations = events.stream()
-                    .map(event -> new Compilation(null, newTitle, event))
-                    .collect(Collectors.toList());
-            Map<Long, List<Compilation>> compilationSaved = compilationRepository.saveAll(compilations)
-                    .stream()
-                    .collect(Collectors.groupingBy(compilation -> compilation.getTitle().getId()));
-
-            List<CompilationDto> compilation = compilationMapper.toCompilationDto(compilationSaved);
-
-            return compilation.get(0);
+        if (compilationDto.getEvents() == null) {
+            compilationDto.setEvents(new ArrayList<>());
         }
+
+        List<Event> events = eventRepository.findByIdIn(compilationDto.getEvents());
+
+        String nameCompilation = compilationDto.getTitle();
+        Optional<CompilationTitle> title = compilationTitleRepository.findByTitle(nameCompilation);
+        CompilationTitle newTitle;
+
+        if (title.isEmpty() && events.isEmpty()) {
+            newTitle = compilationTitleRepository.save(new CompilationTitle(compilationDto.getTitle(), compilationDto.getPinned()));
+            return new CompilationDto(newTitle.getId(), newTitle.getPined(), newTitle.getTitle());
+        }
+        if (title.isEmpty()) {
+            newTitle = compilationTitleRepository.save(new CompilationTitle(compilationDto.getTitle(), compilationDto.getPinned()));
+        } else {
+            newTitle = title.orElseThrow(() -> new NotFoundException("CompilationTitle error"));
+        }
+
+        List<Compilation> compilations = events.stream()
+                .map(event -> new Compilation(null, newTitle, event))
+                .collect(Collectors.toList());
+        Map<Long, List<Compilation>> compilationSaved = compilationRepository.saveAll(compilations)
+                .stream()
+                .collect(Collectors.groupingBy(compilation -> compilation.getTitle().getId()));
+
+        List<CompilationDto> compilation = compilationMapper.toCompilationDto(compilationSaved, participationRequestRepository);
+
+        return compilation.get(0);
+    }
 
     @Override
     public void deleteCompilationById(Long compId) {
@@ -73,6 +83,10 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto updateCompilation(Long compId, UpdateCompilationRequest updateCompilation) {
+        if (updateCompilation.getEvents() == null) {
+            updateCompilation.setEvents(new ArrayList<>());
+        }
+
         CompilationTitle title = compilationTitleRepository.findById(compId).orElseThrow(() -> new NotFoundException("Подборка не найдена"));
         List<Compilation> list = compilationRepository.findAllByTitle_Id(compId);
 
@@ -93,17 +107,21 @@ public class CompilationServiceImpl implements CompilationService {
                     .stream()
                     .collect(Collectors.groupingBy(compilation -> compilation.getTitle().getId()));
 
-            List<CompilationDto> newCompilation = compilationMapper.toCompilationDto(newCompilationMap);
+            List<CompilationDto> newCompilation = compilationMapper.toCompilationDto(newCompilationMap, participationRequestRepository);
 
             return newCompilation.get(0);
         }
 
+        if (list.isEmpty()) {
+            return compilationMapper.toCompilationTitleDto(title);
+        }
+
         Map<Long, List<Compilation>> compilationMap = list.stream()
                 .collect(Collectors.groupingBy(compilation -> compilation.getTitle().getId()));
-        List<CompilationDto> compilation = compilationMapper.toCompilationDto(compilationMap);
+        List<CompilationDto> compilation = compilationMapper.toCompilationDto(compilationMap, participationRequestRepository);
 
         return compilation.get(0);
-}
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -123,7 +141,7 @@ public class CompilationServiceImpl implements CompilationService {
             return compilationsDtos;
         }
 
-        List<CompilationDto> compilations = compilationMapper.toCompilationDto(compilationMap);
+        List<CompilationDto> compilations = compilationMapper.toCompilationDto(compilationMap, participationRequestRepository);
 
         compilationsDtos.forEach(dto ->
                 compilations.stream()
@@ -144,7 +162,7 @@ public class CompilationServiceImpl implements CompilationService {
             return new CompilationDto(title.getId(), title.getPined(), title.getTitle());
         }
         Map<Long, List<Compilation>> compilationMap = list.stream().collect(groupingBy(compilation -> compilation.getTitle().getId(), toList()));
-        List<CompilationDto> compilation = compilationMapper.toCompilationDto(compilationMap);
+        List<CompilationDto> compilation = compilationMapper.toCompilationDto(compilationMap, participationRequestRepository);
         return compilation.get(0);
     }
 }

@@ -5,9 +5,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.dto.category.CategoryDto;
 import ru.practicum.mainservice.dto.category.NewCategoryDto;
@@ -17,7 +19,7 @@ import ru.practicum.mainservice.dto.compilation.UpdateCompilationRequest;
 import ru.practicum.mainservice.dto.event.EntenteParams;
 import ru.practicum.mainservice.dto.event.EventFullDto;
 import ru.practicum.mainservice.dto.event.UpdateEventRequest;
-import ru.practicum.mainservice.dto.user.NewUserRequest;
+import ru.practicum.mainservice.dto.user.NewUser;
 import ru.practicum.mainservice.dto.user.UserDto;
 import ru.practicum.mainservice.service.category.CategoryService;
 import ru.practicum.mainservice.service.compilation.CompilationService;
@@ -27,10 +29,10 @@ import ru.practicum.mainservice.service.user.UserService;
 /**
  * main-service приложения explore-with-me.
  * AdminController
- *  <a href="http://localhost:8080/admin">http://localhost:8080/admin</a>
- *
+ * <a href="http://localhost:8080/admin">http://localhost:8080/admin</a>
  */
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin")
@@ -43,7 +45,7 @@ public class AdminController {
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto createUser(@Valid @RequestBody NewUserRequest createUser) {
+    public UserDto createUser(@Valid @RequestBody NewUser createUser) {
         log.info("POST AdminController/users/createUser {}", createUser);
         return userService.createUser(createUser);
     }
@@ -111,7 +113,7 @@ public class AdminController {
     }
 
     @PatchMapping("/events/{eventId}")
-    public EventFullDto updateEvent(@RequestBody UpdateEventRequest updateEventAdminRequest,
+    public EventFullDto updateEvent(@Valid @RequestBody UpdateEventRequest updateEventAdminRequest,
                                     @PathVariable Long eventId) {
         log.info("PATCH AdminController/ admin/events/{}, updateEvent{}", eventId, updateEventAdminRequest);
         return eventService.updateEventByAdmin(eventId, updateEventAdminRequest);

@@ -15,18 +15,17 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = UserMapper.class)
 public interface EventMapper {
 
-    @Mapping(target = "id", source = "save.id")
     EventFullDto toEventFullDto(Event save);
+
+    EventShortDto toEventShortDto(EventFullDto event);
 
     EventShortDto toEventShortDto(Event event);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", source = "category")
-    @Mapping(target = "state", source = "pending")
-    @Mapping(target = "initiator", source = "user")
-    Event toNewEvent(NewEventDto eventDto, User user, Category category, Location location, EventFullDto.StateEvent pending);
+    Event toNewEvent(NewEventDto eventDto, User initiator, Category category, Location location, EventFullDto.StateEvent state);
 
-    List<EventShortDto> toShortEventList(List<Event> events);
+    List<EventShortDto> toShortEventFullList(List<EventFullDto> events);
 
     List<EventFullDto> toEventFullDtoList(List<Event> events);
 }

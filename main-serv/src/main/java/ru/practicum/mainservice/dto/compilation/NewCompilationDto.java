@@ -13,9 +13,9 @@ public class NewCompilationDto {
 
     private List<Long> events;
 
-    private Boolean pinned;
+    private Boolean pinned = false;
 
     @NotBlank(message = "Имя отсутствует")
-    @Size(max = 200, message = "Имя не может быть длиннее 200 символов")
+    @Size(max = 50, message = "Заголовок не может быть длиннее 50 символов")
     private String title;
 }

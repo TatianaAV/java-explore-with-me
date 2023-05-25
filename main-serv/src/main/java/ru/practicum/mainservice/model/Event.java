@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity(name = "Event")
 @Table(name = "events")
 public class Event {
@@ -30,10 +29,8 @@ public class Event {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @ToString.Exclude
     private Category category;
-
-    @Column(name = "confirmed_requests")
-    private Integer confirmedRequests;
 
     @Column(name = "created_on")
     @JsonFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss", timezone = "Europe/Moscow")
@@ -67,9 +64,6 @@ public class Event {
 
     @Column(name = "request_moderation")
     private Boolean requestModeration;
-
-    @Column(name = "views")
-    private Long views;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", length = 10, nullable = false)

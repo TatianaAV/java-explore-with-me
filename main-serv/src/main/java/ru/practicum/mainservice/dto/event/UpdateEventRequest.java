@@ -7,29 +7,27 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.validation.annotation.Validated;
 import ru.practicum.mainservice.model.Location;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Validated
 public class UpdateEventRequest {
 
-    @Min(value = 20, message = "Min = 20")
-    @Max(value = 2000, message = "Max = 2000")
+    @Size(min = 20, max = 2000,  message = "Полное описание события.  max: 7000, min: 20")
     private String annotation;
 
+    @Positive
     private Long category;
 
-    @Min(value = 20, message = "Min = 20")
-    @Max(value = 7000, message = "Max = 7000")
+    @Size(min = 20, max = 7000,  message = "Полное описание события.  max: 7000, min: 20")
     private String description;
+
 
     @JsonFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss", timezone = "Europe/Moscow")
     private LocalDateTime eventDate;
@@ -44,8 +42,7 @@ public class UpdateEventRequest {
 
     private StateActionEnum stateAction;
 
-    @Min(value = 3, message = "Min = 3")
-    @Max(value = 120, message = "Max = 120")
+    @Size(min = 20, max = 120,  message = "Заголовок события.  max: 120, min: 20")
     private String title;
 
 
